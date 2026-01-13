@@ -50,10 +50,16 @@ export default {
 
     <Accordion title="Instruments">  
       i play the guitar, sadly my guitars are at my parents home, a
-      Fender CD-60S is always waiting my when i go to MX, i’ve been thinking to buy
-      an Epiphone Casino to have one guitar in Europe. My pedalboar is simple: Vox
-      wah-wah V845, Digitech Whammy V, Boss distortion pedal DS-2, Boss Chorus
-      Ensemble CE-5 and a Boss Digital Delay DD-7. I also play the keyboard and the
+      <a target="_blank" href="https://fr.fender.com/products/cd-60s-dreadnought-lh-natural-wn?variant=49498536083743">Fender CD-60S</a>
+      is always waiting my when i go to MX, i’ve been thinking to buy
+      an <a target="_blank"
+      href="https://www.gibson.com/en-eu/products/epiphone-casino-vintage-sunburst-left-handed?view=epiphone">Epiphone Casino</a> to
+      have one guitar in Europe. My pedalboar is simple: <a target="_blank" href="https://voxamps.com/fr/produit/v845-wah-pedal/">Vox
+      wah-wah V845</a>, <a target="_blank" href="https://digitech.com/dp/whammy/">Digitech Whammy V</a>,
+      <a target="_blank" href="https://www.boss.info/fr/products/ds-2/">Boss distortion pedal DS-2</a>,
+      <a target="_blank" href="https://www.boss.info/fr/products/ce-5/">Boss Chorus
+      Ensemble CE-5</a> and a <a target="_blank" href="https://www.boss.info/fr/products/dd-7/">Boss
+      Digital Delay DD-7</a>. I also play the keyboard and the
       harmonic.
     </Accordion>
 
