@@ -73,7 +73,8 @@ const AboutMeContent = () => (
         in what clothing says about time, place, weather, economy and personality.
       </p>
 
-      <p> So yes, that’s me vcastor. Inspired by way too many cool people to
+      <p> So yes, that’s me vcastor, <a target="_blank" href="https://www.youtube.com/watch?v=XFkzRNyygfk"> i
+        wish i was special</a>, but i'm not. Inspired by way too many cool people to
         list, but let’s be honest: i’ll probably never have an aesthetic desk setup
         like <a href="https://www.youtube.com/@maisyleigh" target="_blank">Maisy
         Leigh</a>, or if you were hoping for a documented creative pipeline like <a
@@ -333,7 +334,7 @@ const FAQsContent = ({ openPost }) => (
     </Accordion>
     
     <Accordion title="Where does she live?">
-      <p><a href="https://www.youtube.com/watch?v=FusIKjztap8" targe="_blank">Here, there and everywhere.</a></p>
+      <p><a href="https://www.youtube.com/watch?v=FusIKjztap8" target="_blank">Here, there and everywhere.</a></p>
     </Accordion>
   </div>
 )
