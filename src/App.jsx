@@ -46,11 +46,11 @@ const AboutMeContent = () => (
     </div>
 
     <p className="window-text">hiya!, i'm vcastor (the v is silent), you can call me castor, victoria,
-      vic, victoire, as you wish.</p>
+      vic, cas, victoire, as you wish.</p>
 
     <p className="window-text">Welcome to my webpage! If you're here
       for my CV, you can find a PDF version <a
-      href="https://vcastor.github.io/CV_GitHub.pdf" target="_blank">here</a>.
+      href="https://github.com/vcastor/cv/blob/main/cv_dark.pdf" target="_blank">here</a>.
       You'll also find all that info (and more!) in an
       interactive way here, in my little space of the internet.
     </p>
@@ -63,7 +63,7 @@ const AboutMeContent = () => (
 
       <p>Music, computers and history are what i like. If you want a deep
         dive on cinema or literature, you'll have to look elsewhere —i'm still working
-        on my "pretentious movie buff" phase. Not a traveler, neither a foodie, but I do
+        on my "pretentious movie buff" phase. Not a traveler, neither a foodie, but i do
         enjoy discovering new places (on Google Maps) and cooking something edible
         (sometimes tasty).</p>
 
