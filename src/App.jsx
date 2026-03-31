@@ -1,6 +1,6 @@
 import React, { useState, useContext, createContext, useRef, useCallback, useEffect } from 'react'
-import { posts } from './posts'
-import { projects } from './projects'
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 // Window Manager Context
 const WindowManagerContext = createContext(null)
@@ -15,10 +15,10 @@ const useWindow = () => useContext(WindowContext)
 // Accordion Component for collapsible sections
 const Accordion = ({ title, children, defaultOpen = false }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  
+
   return (
     <div className="accordion-item">
-      <button 
+      <button
         className="accordion-header"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -32,7 +32,7 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
       </div>
     </div>
   )
-}  
+}
 
 // Window Content Components
 const AboutMeContent = () => (
@@ -45,43 +45,43 @@ const AboutMeContent = () => (
       </div>
     </div>
 
-    <p className="window-text">hiya!, i’m vcastor (the v is silent), you can call me castor, victoria,
+    <p className="window-text">hiya!, i'm vcastor (the v is silent), you can call me castor, victoria,
       vic, victoire, as you wish.</p>
 
-    <p className="window-text">Welcome to my webpage! If you’re here
+    <p className="window-text">Welcome to my webpage! If you're here
       for my CV, you can find a PDF version <a
       href="https://vcastor.github.io/CV_GitHub.pdf" target="_blank">here</a>.
-      You’ll also find all that info (and more!) in an
+      You'll also find all that info (and more!) in an
       interactive way here, in my little space of the internet.
     </p>
 
     <Accordion title="Hey, it's me">
-      <p>I’m just your average person who spends way too much time surfing the web,
+      <p>I'm just your average person who spends way too much time surfing the web,
         aspiring to live like <a href="https://www.youtube.com/watch?v=yuTMWgOduFM"
         target="_blank">common people</a> —<i>renting a flat, getting a job...</i>— and
         occasionally questioning my life choices in front of a terminal.</p>
 
       <p>Music, computers and history are what i like. If you want a deep
-        dive on cinema or literature, you’ll have to look elsewhere —i’m still working
-        on my “pretentious movie buff” phase. Not a traveler, neither a foodie, but I do
+        dive on cinema or literature, you'll have to look elsewhere —i'm still working
+        on my "pretentious movie buff" phase. Not a traveler, neither a foodie, but I do
         enjoy discovering new places (on Google Maps) and cooking something edible
         (sometimes tasty).</p>
 
-      <p> I’m that person who can show up in anything from a chinese qipao to a
-        mexican huipil, or just a shirt and tie for maximum “why not” energy.
-        Yes, i like fashion, but for not the trends —i’m more interested
+      <p> I'm that person who can show up in anything from a chinese qipao to a
+        mexican huipil, or just a shirt and tie for maximum "why not" energy.
+        Yes, i like fashion, but for not the trends —i'm more interested
         in what clothing says about time, place, weather, economy and personality.
       </p>
 
-      <p> So yes, that’s me vcastor, <a target="_blank" href="https://www.youtube.com/watch?v=XFkzRNyygfk"> i
+      <p> So yes, that's me vcastor, <a target="_blank" href="https://www.youtube.com/watch?v=XFkzRNyygfk"> i
         wish i was special</a>, but i'm not. Inspired by way too many cool people to
-        list, but let’s be honest: i’ll probably never have an aesthetic desk setup
+        list, but let's be honest: i'll probably never have an aesthetic desk setup
         like <a href="https://www.youtube.com/@maisyleigh" target="_blank">Maisy
         Leigh</a>, or if you were hoping for a documented creative pipeline like <a
         href="https://www.youtube.com/@shar" target="_blank">Shar</a> well... i'll break
         your heart, (though this site is inspired by <a
           href="https://www.sharyap.com" target="_blank">her website</a>).
-        Realistically, i’m somewhere between <a
+        Realistically, i'm somewhere between <a
         href="https://www.youtube.com/@helloerika" target="_blank">hello erika </a>
         and <a href="https://www.youtube.com/@CompadreTlacuache"
         target="_blank">compadre tlacuache</a>, with a dash of being a <a
@@ -125,8 +125,8 @@ const LinksContent = ({ openWindow }) => {
           </div>
         ))}
       </div>
-    <p class="links-note">Click the icons to visit my profiles</p>
-    <p class="links-note">I'm cronically online, feel free to reach out!</p>
+    <p className="links-note">Click the icons to visit my profiles</p>
+    <p className="links-note">I'm cronically online, feel free to reach out!</p>
     </div>
   )
 }
@@ -173,36 +173,70 @@ const renderTextContent = (text) => {
   })
 }
 
-const BlogContent = ({ openPost }) => (
-  <div className="window-content blog-content">
-    <h3>Thoughts & Posts</h3>
-    <p><a target="_blank"
-      href="https://www.youtube.com/watch?v=b8-tXG8KrWs&list=RDVWjSXSpBKWk&index=6">Tell us a
-      story, i know you're not boring</a></p>
-    <div className="posts-list">
-      {posts.map((post) => (
-        <div
-          key={post.id}
-          className="post-card"
-          onClick={() => openPost(post.id)}
-        >
-          {post.image && <img src={post.image} alt="" className="post-thumb" />}
-          <div className="post-info">
-            <h4>{post.title}</h4>
-            <span className="post-date">{post.date}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)
+// BlogContent fetches post list from API
+const BlogContent = ({ openPost }) => {
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
 
-const PostContent = ({ post }) => {
+  useEffect(() => {
+    fetch(`${API_BASE}/api/posts`)
+      .then(r => r.json())
+      .then(data => { setPosts(data); setLoading(false) })
+  }, [])
+
+  if (loading) return <div className="window-content blog-content"><p>Loading...</p></div>
+
+  return (
+    <div className="window-content blog-content">
+      <h3>Thoughts & Posts</h3>
+      <p><a target="_blank"
+        href="https://www.youtube.com/watch?v=b8-tXG8KrWs&list=RDVWjSXSpBKWk&index=6">Tell us a
+        story, i know you're not boring</a></p>
+      <div className="posts-list">
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className="post-card"
+            onClick={() => openPost(post.id)}
+          >
+            {post.thumb && <img src={`${API_BASE}${post.thumb}`} alt="" className="post-thumb" loading="lazy" />}
+            <div className="post-info">
+              <h4>{post.title}</h4>
+              <span className="post-date">{post.date}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// PostContent fetches full post on mount
+const PostContent = ({ postId }) => {
+  const [post, setPost] = useState(null)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/posts/${postId}`)
+      .then(r => r.json())
+      .then(setPost)
+  }, [postId])
+
+  if (!post) return <div className="window-content post-content"><p>Loading...</p></div>
+
   const parts = parseContent(post.content)
 
   return (
     <div className="window-content post-content">
-      {post.image && <img src={post.image} alt="" className="post-image" />}
+      {post.image && (
+        <img
+          src={`${API_BASE}${post.image}`}
+          srcSet={post.imageSrcSet ? post.imageSrcSet.split(', ').map(s => `${API_BASE}${s}`).join(', ') : undefined}
+          sizes="(max-width: 600px) 400px, 800px"
+          alt=""
+          className="post-image"
+          loading="lazy"
+        />
+      )}
       <h2>{post.title}</h2>
       <span className="post-date">{post.date}</span>
       <div className="post-body">
@@ -229,9 +263,6 @@ const WorkContent = ({ openProject }) => {
     { name: 'git', url: 'https://git-scm.com' },
     { name: 'SCM', url: 'https://www.scm.com' },
     { name: 'AIMAll', url: 'https://aim.tkgristmill.com' },
-    // { name: 'Bash', url: 'https://www.gnu.org/software/bash/' },
-    // { name: 'Orca', url: 'https://www.faccts.de/orca/' },
-    // { name: 'Gaussian', url: 'https://gaussian.com' },
     { name: 'Inkscape', url: 'https://inkscape.org' },
     { name: 'GIMP', url: 'https://www.gimp.org' },
   ]
@@ -259,15 +290,15 @@ const WorkContent = ({ openProject }) => {
 
   return (
     <div className="window-content work-content">
-      
+
       <div className="tools-section">
         <h4>Tools, Technologies & Skills</h4>
         <div className="tags">
           { tools.map(tool => (
-            <a 
-              key={tool.name} 
-              href={tool.url} 
-              target="_blank" 
+            <a
+              key={tool.name}
+              href={tool.url}
+              target="_blank"
               className="tag tag-link"
             >
               {tool.name}
@@ -275,7 +306,7 @@ const WorkContent = ({ openProject }) => {
           )) }
         </div>
       </div>
-      
+
       <div className="projects-section">
         <h4>Projects</h4>
         {projects.map(project => (
@@ -293,12 +324,23 @@ const WorkContent = ({ openProject }) => {
   )
 }
 
-const ProjectContent = ({ project }) => {
+// ProjectContent fetches from API
+const ProjectContent = ({ projectId }) => {
+  const [project, setProject] = useState(null)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/projects/${projectId}`)
+      .then(r => r.json())
+      .then(setProject)
+  }, [projectId])
+
+  if (!project) return <div className="window-content post-content"><p>Loading...</p></div>
+
   const parts = parseContent(project.content)
 
   return (
     <div className="window-content post-content">
-      {project.image && <img src={project.image} alt="" className="post-image" />}
+      {project.image && <img src={`${API_BASE}${project.image}`} alt="" className="post-image" loading="lazy" />}
       <h2>{project.title}</h2>
       <div className="post-body">
         {parts.map((part, i) => {
@@ -319,20 +361,20 @@ const ProjectContent = ({ project }) => {
 const FAQsContent = ({ openPost }) => (
   <div className="window-content faqs-content">
     <h3>Frequently Asked Questions</h3>
-    
+
     <Accordion title="What does vcastor do?" defaultOpen={true}>
       <p>VCastor is just trying not to die today, occasionally she writes code.</p>
     </Accordion>
-    
+
     <Accordion title="What tools does she use?">
       <p>Primarily Fortran for my work, python for scripting, vim as my editor, and bash for automation,
       i have an entire <span className="inline-link" onClick={() => openPost('setup')}>post</span> dedicated to my set up.</p>
     </Accordion>
-    
+
     <Accordion title="Can i see her code?">
       <p>Sure!, most of my projects are open source and available on my GitHub.</p>
     </Accordion>
-    
+
     <Accordion title="Where does she live?">
       <p><a href="https://www.youtube.com/watch?v=FusIKjztap8" target="_blank">Here, there and everywhere.</a></p>
     </Accordion>
@@ -346,10 +388,10 @@ const Window = ({ id, title, children, icon }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  
+
   const windowData = windows.find(w => w.id === id)
   if (!windowData) return null
-  
+
   const { position, size, zIndex, isMaximized } = windowData
 
   const handleMouseDown = (e) => {
@@ -405,12 +447,12 @@ const Window = ({ id, title, children, icon }) => {
     }
   }, [isDragging, isResizing, dragOffset, id, isMaximized])
 
-  const windowStyle = isMaximized 
+  const windowStyle = isMaximized
     ? { top: 0, left: 0, width: '100%', height: 'calc(100% - 80px)', zIndex }
     : { top: position.y, left: position.x, width: size.width, height: size.height, zIndex }
 
   return (
-    <div 
+    <div
       ref={windowRef}
       className={`window ${isMaximized ? 'maximized' : ''}`}
       style={windowStyle}
@@ -445,22 +487,16 @@ const Dock = () => {
   const { openWindow, windows, focusWindow } = useWindowManager()
 
   const handleOpenPost = (postId) => {
-    const post = posts.find(p => p.id === postId)
-    if (post) {
-      openWindow(`post-${post.id}`, post.title, <PostContent post={post} />, '📄')
-    }
+    openWindow(`post-${postId}`, postId, <PostContent postId={postId} />, '📄')
   }
 
   const handleOpenProject = (projectId) => {
-    const project = projects[projectId]
-    if (project) {
-      openWindow(`project-${project.id}`, project.title, <ProjectContent project={project} />, '🔭', { width: 600, height: 500 })
-    }
+    openWindow(`project-${projectId}`, projectId, <ProjectContent projectId={projectId} />, '🔭', { width: 600, height: 500 })
   }
 
   const dockItems = [
     { id: 'about', title: 'About Me', icon: '👩🏽‍🚀', content: <AboutMeContent />, size: { width: 750, height: 500 } },
-    { id: 'links', title: 'Links', icon: '🔗', content: <LinksContent />, content: <LinksContent openWindow={openWindow} /> },
+    { id: 'links', title: 'Links', icon: '🔗', content: <LinksContent openWindow={openWindow} /> },
     { id: 'blog', title: 'Blog', icon: '📝', content: <BlogContent openPost={handleOpenPost}/> },
     { id: 'work', title: 'Work', icon: '💼', content: <WorkContent openProject={handleOpenProject} /> },
     { id: 'faqs', title: 'FAQs', icon: '❓', content: <FAQsContent openPost={handleOpenPost} /> },
@@ -471,7 +507,7 @@ const Dock = () => {
     if (existingWindow) {
       focusWindow(item.id)
     } else {
-      openWindow(item.id, item.title, item.content, item.icon, item.size)  // pass size
+      openWindow(item.id, item.title, item.content, item.icon, item.size)
     }
   }
 
@@ -501,7 +537,7 @@ const Dock = () => {
 // Desktop Component
 const Desktop = () => {
   const { windows } = useWindowManager()
-  
+
   return (
     <div className="desktop">
       <div className="desktop-greeting">
