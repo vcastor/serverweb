@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import postsRouter from './routes/posts.js'
 import projectsRouter from './routes/projects.js'
+import photosRouter from './routes/photos.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -22,6 +23,7 @@ app.use('/img', express.static(join(__dirname, '..', 'img')))
 // API routes
 app.use('/api/posts', postsRouter)
 app.use('/api/projects', projectsRouter)
+app.use('/api/photos', photosRouter)
 
 // In production, serve the Vite build
 if (process.env.NODE_ENV === 'production') {

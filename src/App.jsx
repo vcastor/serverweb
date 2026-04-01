@@ -358,6 +358,88 @@ const ProjectContent = ({ projectId }) => {
   )
 }
 
+// Photos gallery — fetches from API
+const PhotosContent = () => {
+  const [photos, setPhotos] = useState([])
+  const [selected, setSelected] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/photos`)
+      .then(r => r.json())
+      .then(data => { setPhotos(data); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className="window-content"><p>Loading photos...</p></div>
+
+  return (
+    <div className="window-content photos-content">
+      <h3>Photos</h3>
+      <p className="photos-subtitle">random moments, updated ever and anon</p>
+      {selected && (
+        <div className="photo-lightbox" onClick={() => setSelected(null)}>
+          <img src={selected.src} alt={selected.caption || ''} />
+          {selected.caption && <p className="photo-lightbox-caption">{selected.caption}</p>}
+        </div>
+      )}
+      <div className="photos-grid">
+        {photos.map(photo => (
+          <div
+            key={photo.id}
+            className="photo-card"
+            onClick={() => setSelected(photo)}
+          >
+            <img src={photo.src} alt={photo.caption || ''} loading="lazy" />
+            {photo.caption && <span className="photo-caption">{photo.caption}</span>}
+          </div>
+        ))}
+      </div>
+      {photos.length === 0 && <p style={{ opacity: 0.6 }}>No photos yet — coming soon!</p>}
+    </div>
+  )
+}
+
+// Arcade — fullscreen takeover that blacks out the entire desktop
+const ArcadeOverlay = ({ onExit }) => {
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === 'Escape') onExit() }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onExit])
+
+  return (
+    <div className="arcade-fullscreen">
+      <div className="arcade-scanlines" />
+      <div className="arcade-screen">
+        <div className="arcade-placeholder">
+          <p className="arcade-crt-text">LOADING GAME...</p>
+          <p style={{ marginTop: 24, opacity: 0.5, fontSize: '0.8rem' }}>
+            game module not loaded yet.<br/>
+            this is where the WASM binary will mount.
+          </p>
+          <button className="arcade-back-btn" onClick={onExit}>
+            ESC — EXIT
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const ArcadeContent = ({ onLaunch }) => (
+  <div className="window-content arcade-content">
+    <div className="arcade-splash">
+      <div className="arcade-title-art">ARCADE</div>
+      <p>press start to play</p>
+      <button className="arcade-start-btn" onClick={onLaunch}>
+        START
+      </button>
+      <p className="arcade-note">game coming soon — built in C++ compiled to WebAssembly</p>
+    </div>
+  </div>
+)
+
 const FAQsContent = ({ openPost }) => (
   <div className="window-content faqs-content">
     <h3>Frequently Asked Questions</h3>
@@ -534,9 +616,31 @@ const Dock = () => {
   )
 }
 
+// Desktop shortcut icon
+const DesktopShortcut = ({ icon, label, onClick }) => (
+  <button className="desktop-shortcut" onClick={onClick} title={label}>
+    <span className="desktop-shortcut-icon">{icon}</span>
+    <span className="desktop-shortcut-label">{label}</span>
+  </button>
+)
+
 // Desktop Component
-const Desktop = () => {
-  const { windows } = useWindowManager()
+const Desktop = ({ arcadeActive, setArcadeActive }) => {
+  const { windows, openWindow } = useWindowManager()
+
+  const handleOpenPhotos = () => {
+    const existing = windows.find(w => w.id === 'photos')
+    if (!existing) {
+      openWindow('photos', 'Photos', <PhotosContent />, '🖼️', { width: 600, height: 500 })
+    }
+  }
+
+  const handleOpenArcade = () => {
+    const existing = windows.find(w => w.id === 'arcade')
+    if (!existing) {
+      openWindow('arcade', 'Arcade', <ArcadeContent onLaunch={() => setArcadeActive(true)} />, '👾', { width: 460, height: 380 })
+    }
+  }
 
   return (
     <div className="desktop">
@@ -544,11 +648,19 @@ const Desktop = () => {
         <h1>VCastor</h1>
         <p>developer, scientist, arrogant</p>
       </div>
+
+      <div className="desktop-shortcuts">
+        <DesktopShortcut icon="🖼️" label="Photos" onClick={handleOpenPhotos} />
+        <DesktopShortcut icon="👾" label="Arcade" onClick={handleOpenArcade} />
+      </div>
+
       {windows.map((win) => (
         <Window key={win.id} id={win.id} title={win.title} icon={win.icon}>
           {win.content}
         </Window>
       ))}
+
+      {arcadeActive && <ArcadeOverlay onExit={() => setArcadeActive(false)} />}
     </div>
   )
 }
@@ -639,11 +751,13 @@ const WindowManagerProvider = ({ children }) => {
 
 // Main App
 export default function App() {
+  const [arcadeActive, setArcadeActive] = useState(false)
+
   return (
     <WindowManagerProvider>
       <div className="os-container">
-        <Desktop />
-        <Dock />
+        <Desktop arcadeActive={arcadeActive} setArcadeActive={setArcadeActive} />
+        {!arcadeActive && <Dock />}
       </div>
     </WindowManagerProvider>
   )
