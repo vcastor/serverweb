@@ -1,0 +1,34 @@
+[
+  {
+    "id": "m1",
+    "title": "Creep",
+    "artist": "Radiohead",
+    "url": "https://www.youtube.com/watch?v=XFkzRNyygfk",
+    "cover": null,
+    "note": "i wish i was special"
+  },
+  {
+    "id": "m2",
+    "title": "Common People",
+    "artist": "Pulp",
+    "url": "https://www.youtube.com/watch?v=yuTMWgOduFM",
+    "cover": null,
+    "note": null
+  },
+  {
+    "id": "m3",
+    "title": "Good Old-Fashioned Lover Boy",
+    "artist": "Queen",
+    "url": "https://www.youtube.com/watch?v=N2qk6VZokx0",
+    "cover": null,
+    "note": null
+  },
+  {
+    "id": "m4",
+    "title": "Here, There and Everywhere",
+    "artist": "The Beatles",
+    "url": "https://www.youtube.com/watch?v=FusIKjztap8",
+    "cover": null,
+    "note": null
+  }
+]

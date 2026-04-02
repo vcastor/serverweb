@@ -768,6 +768,82 @@ a:hover {
   font-size: 0.9rem;
 }
 
+/* Mosaic grid — shared by Music and Internet */
+.mosaic-content h3 {
+  margin-bottom: 4px;
+}
+
+.mosaic-subtitle {
+  opacity: 0.6;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.mosaic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.mosaic-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.mosaic-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border-bottom-color: transparent;
+}
+
+.mosaic-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.mosaic-cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mosaic-info {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mosaic-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.mosaic-artist {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.mosaic-note {
+  font-size: 0.7rem;
+  opacity: 0.45;
+  font-style: italic;
+  margin-top: 2px;
+}
+
 /* Desktop Shortcuts */
 .desktop-shortcuts {
   position: absolute;
@@ -798,8 +874,10 @@ a:hover {
 }
 
 .desktop-shortcut-icon {
-  font-size: 2.4rem;
+  width: 48px;
+  height: 48px;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
 }
 
 .desktop-shortcut-label {
@@ -938,6 +1016,20 @@ a:hover {
 .arcade-back-btn:hover {
   background: rgba(0, 255, 0, 0.1);
   border-color: rgba(0, 255, 0, 0.7);
+}
+
+.arcade-exit-fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100000;
+  margin-top: 0;
+}
+
+/* The game canvas inside the fullscreen overlay */
+.arcade-fullscreen canvas {
+  display: block;
+  image-rendering: pixelated;
 }
 
 /* Responsive */

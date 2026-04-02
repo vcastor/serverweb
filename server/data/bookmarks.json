@@ -1,0 +1,30 @@
+[
+  {
+    "id": "b1",
+    "title": "Shar Yap",
+    "url": "https://www.sharyap.com",
+    "description": "creative portfolio that inspired this site",
+    "icon": null
+  },
+  {
+    "id": "b2",
+    "title": "Maisy Leigh",
+    "url": "https://www.youtube.com/@maisyleigh",
+    "description": "aesthetic desk setups and creative vlogs",
+    "icon": null
+  },
+  {
+    "id": "b3",
+    "title": "hello erika",
+    "url": "https://www.youtube.com/@helloerika",
+    "description": null,
+    "icon": null
+  },
+  {
+    "id": "b4",
+    "title": "Compadre Tlacuache",
+    "url": "https://www.youtube.com/@CompadreTlacuache",
+    "description": null,
+    "icon": null
+  }
+]

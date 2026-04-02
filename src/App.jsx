@@ -1,4 +1,9 @@
 import React, { useState, useContext, createContext, useRef, useCallback, useEffect } from 'react'
+import { startGame, stopGame } from './assets/game/loader.js'
+import photosIcon from './assets/icons/photos.svg'
+import musicIcon from './assets/icons/music.svg'
+import internetIcon from './assets/icons/internet.svg'
+import arcadeIcon from './assets/icons/arcade.svg'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
@@ -400,29 +405,133 @@ const PhotosContent = () => {
   )
 }
 
-// Arcade — fullscreen takeover that blacks out the entire desktop
-const ArcadeOverlay = ({ onExit }) => {
+// Music recommendations — mosaic grid
+const MusicContent = () => {
+  const [tracks, setTracks] = useState([])
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
-    const handleKey = (e) => { if (e.key === 'Escape') onExit() }
+    fetch(`${API_BASE}/api/music`)
+      .then(r => r.json())
+      .then(data => { setTracks(data); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className="window-content"><p>Loading...</p></div>
+
+  return (
+    <div className="window-content mosaic-content">
+      <h3>Music</h3>
+      <p className="mosaic-subtitle">stuff i've been listening to</p>
+      <div className="mosaic-grid">
+        {tracks.map(t => (
+          <a
+            key={t.id}
+            className="mosaic-card"
+            href={t.url}
+            target="_blank"
+            rel="noopener"
+          >
+            {t.cover
+              ? <img src={t.cover} alt={t.title} className="mosaic-cover" loading="lazy" />
+              : <div className="mosaic-cover mosaic-cover-placeholder">🎵</div>
+            }
+            <div className="mosaic-info">
+              <span className="mosaic-title">{t.title}</span>
+              <span className="mosaic-artist">{t.artist}</span>
+              {t.note && <span className="mosaic-note">{t.note}</span>}
+            </div>
+          </a>
+        ))}
+      </div>
+      {tracks.length === 0 && <p style={{ opacity: 0.6 }}>No tracks yet</p>}
+    </div>
+  )
+}
+
+// Internet bookmarks — mosaic grid
+const BookmarksContent = () => {
+  const [links, setLinks] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/bookmarks`)
+      .then(r => r.json())
+      .then(data => { setLinks(data); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className="window-content"><p>Loading...</p></div>
+
+  return (
+    <div className="window-content mosaic-content">
+      <h3>Internet</h3>
+      <p className="mosaic-subtitle">corners of the web i love</p>
+      <div className="mosaic-grid">
+        {links.map(l => (
+          <a
+            key={l.id}
+            className="mosaic-card"
+            href={l.url}
+            target="_blank"
+            rel="noopener"
+          >
+            <div className="mosaic-cover mosaic-cover-placeholder">🌐</div>
+            <div className="mosaic-info">
+              <span className="mosaic-title">{l.title}</span>
+              {l.description && <span className="mosaic-artist">{l.description}</span>}
+            </div>
+          </a>
+        ))}
+      </div>
+      {links.length === 0 && <p style={{ opacity: 0.6 }}>No bookmarks yet</p>}
+    </div>
+  )
+}
+
+// Arcade — fullscreen takeover that loads the WASM game
+const ArcadeOverlay = ({ onExit }) => {
+  const containerRef = useRef(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Launch game into the container
+    if (containerRef.current) {
+      startGame(containerRef.current).then(() => setLoading(false))
+    }
+
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        stopGame()
+        onExit()
+      }
+    }
     window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
+
+    return () => {
+      window.removeEventListener('keydown', handleKey)
+      stopGame()
+    }
   }, [onExit])
+
+  const handleExit = () => {
+    stopGame()
+    onExit()
+  }
 
   return (
     <div className="arcade-fullscreen">
       <div className="arcade-scanlines" />
-      <div className="arcade-screen">
-        <div className="arcade-placeholder">
-          <p className="arcade-crt-text">LOADING GAME...</p>
-          <p style={{ marginTop: 24, opacity: 0.5, fontSize: '0.8rem' }}>
-            game module not loaded yet.<br/>
-            this is where the WASM binary will mount.
-          </p>
-          <button className="arcade-back-btn" onClick={onExit}>
-            ESC — EXIT
-          </button>
-        </div>
+      <div className="arcade-screen" ref={containerRef}>
+        {loading && (
+          <div className="arcade-placeholder">
+            <p className="arcade-crt-text">LOADING GAME...</p>
+          </div>
+        )}
       </div>
+      <button className="arcade-back-btn arcade-exit-fixed" onClick={handleExit}>
+        ESC — EXIT
+      </button>
     </div>
   )
 }
@@ -616,10 +725,10 @@ const Dock = () => {
   )
 }
 
-// Desktop shortcut icon
+// Desktop shortcut icon — uses SVG images
 const DesktopShortcut = ({ icon, label, onClick }) => (
   <button className="desktop-shortcut" onClick={onClick} title={label}>
-    <span className="desktop-shortcut-icon">{icon}</span>
+    <img className="desktop-shortcut-icon" src={icon} alt={label} draggable="false" />
     <span className="desktop-shortcut-label">{label}</span>
   </button>
 )
@@ -642,6 +751,20 @@ const Desktop = ({ arcadeActive, setArcadeActive }) => {
     }
   }
 
+  const handleOpenMusic = () => {
+    const existing = windows.find(w => w.id === 'music')
+    if (!existing) {
+      openWindow('music', 'Music', <MusicContent />, '🎵', { width: 550, height: 480 })
+    }
+  }
+
+  const handleOpenBookmarks = () => {
+    const existing = windows.find(w => w.id === 'bookmarks')
+    if (!existing) {
+      openWindow('bookmarks', 'Internet', <BookmarksContent />, '🌐', { width: 550, height: 480 })
+    }
+  }
+
   return (
     <div className="desktop">
       <div className="desktop-greeting">
@@ -650,8 +773,10 @@ const Desktop = ({ arcadeActive, setArcadeActive }) => {
       </div>
 
       <div className="desktop-shortcuts">
-        <DesktopShortcut icon="🖼️" label="Photos" onClick={handleOpenPhotos} />
-        <DesktopShortcut icon="👾" label="Arcade" onClick={handleOpenArcade} />
+        <DesktopShortcut icon={photosIcon} label="Photos" onClick={handleOpenPhotos} />
+        <DesktopShortcut icon={musicIcon} label="Music" onClick={handleOpenMusic} />
+        <DesktopShortcut icon={internetIcon} label="Internet" onClick={handleOpenBookmarks} />
+        <DesktopShortcut icon={arcadeIcon} label="Arcade" onClick={handleOpenArcade} />
       </div>
 
       {windows.map((win) => (

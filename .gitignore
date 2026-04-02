@@ -3,3 +3,6 @@ img/*
 node_modules/*
 .DS_Store
 .claude/*
+server/public/img/*
+server/data/posts.json
+server/data/projects.json
