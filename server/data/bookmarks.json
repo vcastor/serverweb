@@ -1,23 +1,23 @@
 [
   {
     "id": "b1",
-    "title": "Shar Yap",
-    "url": "https://www.sharyap.com",
-    "description": "creative portfolio that inspired this site",
+    "title": "Veronica explains",
+    "url": "https://vkc.sh",
+    "description": "creative portfolio of a COBOL developer",
     "icon": null
   },
   {
     "id": "b2",
-    "title": "Maisy Leigh",
-    "url": "https://www.youtube.com/@maisyleigh",
-    "description": "aesthetic desk setups and creative vlogs",
+    "title": "Lemnismath",
+    "url": "https://lemnismath.org", 
+    "description": "Cool math blogs and videos",
     "icon": null
   },
   {
     "id": "b3",
-    "title": "hello erika",
-    "url": "https://www.youtube.com/@helloerika",
-    "description": null,
+    "title": "Spanish folk",
+    "url": "https://folkcostume.blogspot.com/2011/10/charro-costume-of-salamanca-province.html",
+    "description": "Blog about Spanish folk costumes",
     "icon": null
   },
   {

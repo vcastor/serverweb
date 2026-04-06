@@ -1,5 +1,17 @@
 # VCastor — Personal Webpage
 
+## Commands
+
+```bash
+npm run dev              # Vite dev server (front-end, port 3000)
+npm run dev:server       # Express server  (back-end, port 3001)
+npm run build:content    # .tex → .json    (posts & projects)
+npm run build            # production build → dist/
+npm run optimize-images  # img/ → WebP thumbnails (200/400/800w)
+```
+
+---
+
 ```bash
 # 0. Install dependencies (once)
 npm install
@@ -131,17 +143,6 @@ npm run build:content
 
 ---
 
-## Commands
-
-```bash
-npm run dev              # Vite dev server (front-end, port 3000)
-npm run dev:server       # Express server  (back-end, port 3001)
-npm run build:content    # .tex → .json    (posts & projects)
-npm run build            # production build → dist/
-npm run optimize-images  # img/ → WebP thumbnails (200/400/800w)
-```
-
----
 
 ## Desktop layout
 
