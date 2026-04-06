@@ -5,11 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    open: true,
-    proxy: {
-      '/api': 'http://localhost:3001',
-      '/img': 'http://localhost:3001'
-    }
+    open: true
   },
   build: {
     outDir: 'dist'

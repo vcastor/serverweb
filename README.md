@@ -1,32 +1,27 @@
 # VCastor — Personal Webpage
 
+## How it works
+
+The front-end is a static React app hosted on Hostinger. All data (posts,
+projects, photos, music, bookmarks) is served as JSON files from this
+GitHub repo via `raw.githubusercontent.com`. No backend server is needed
+at runtime.
+
 ## Commands
 
 ```bash
+npm install              # install dependencies (once)
+npm run build:content    # .tex → .json (posts & projects) — run after editing posts
 npm run dev              # Vite dev server (front-end, port 3000)
-npm run dev:server       # Express server  (back-end, port 3001)
-npm run build:content    # .tex → .json    (posts & projects)
 npm run build            # production build → dist/
 npm run optimize-images  # img/ → WebP thumbnails (200/400/800w)
 ```
 
----
+### Updating content workflow
 
-```bash
-# 0. Install dependencies (once)
-npm install
-
-# 1. Compile tex posts into JSON (run after add/edit posts)
-npm run build:content
-
-# 2. Start the back-end  (port 3001)
-npm run dev:server
-
-# 3. Start the front-end  (port 3000, proxies API)
-npm run dev
-```
-
-For production: `npm run build` then `NODE_ENV=production npm run dev:server`.
+1. Edit `.tex` files or JSON data in `server/data/`
+2. Run `npm run build:content` (only needed for posts/projects)
+3. Commit and push — the frontend fetches data from GitHub raw on each visit
 
 ---
 
@@ -73,7 +68,7 @@ For production: `npm run build` then `NODE_ENV=production npm run dev:server`.
 │
 ├── img/                           ← source images (avatar, etc.)
 ├── index.html                     ← HTML shell
-├── vite.config.js                 ← Vite config (dev proxy to :3001)
+├── vite.config.js                 ← Vite config
 └── package.json
 ```
 

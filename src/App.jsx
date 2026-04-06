@@ -5,7 +5,7 @@ import musicIcon from './assets/icons/music.svg'
 import internetIcon from './assets/icons/internet.svg'
 import arcadeIcon from './assets/icons/arcade.svg'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+const DATA_BASE = 'https://raw.githubusercontent.com/vcastor/serverweb/main/server/data'
 
 // Window Manager Context
 const WindowManagerContext = createContext(null)
@@ -178,15 +178,20 @@ const renderTextContent = (text) => {
   })
 }
 
-// BlogContent fetches post list from API
+// Shared cache for posts.json (fetched once, used by BlogContent + PostContent)
+let postsCache = null
+const fetchPosts = () => {
+  if (postsCache) return postsCache
+  postsCache = fetch(`${DATA_BASE}/posts.json`).then(r => r.json())
+  return postsCache
+}
+
 const BlogContent = ({ openPost }) => {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/posts`)
-      .then(r => r.json())
-      .then(data => { setPosts(data); setLoading(false) })
+    fetchPosts().then(data => { setPosts(data); setLoading(false) })
   }, [])
 
   if (loading) return <div className="window-content blog-content"><p>Loading...</p></div>
@@ -204,7 +209,7 @@ const BlogContent = ({ openPost }) => {
             className="post-card"
             onClick={() => openPost(post.id)}
           >
-            {post.thumb && <img src={`${API_BASE}${post.thumb}`} alt="" className="post-thumb" loading="lazy" />}
+            {post.image && <img src={post.image} alt="" className="post-thumb" loading="lazy" />}
             <div className="post-info">
               <h4>{post.title}</h4>
               <span className="post-date">{post.date}</span>
@@ -216,14 +221,14 @@ const BlogContent = ({ openPost }) => {
   )
 }
 
-// PostContent fetches full post on mount
+// PostContent looks up from the same cached posts.json
 const PostContent = ({ postId }) => {
   const [post, setPost] = useState(null)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/posts/${postId}`)
-      .then(r => r.json())
-      .then(setPost)
+    fetchPosts().then(data => {
+      setPost(data.find(p => p.id === postId) || null)
+    })
   }, [postId])
 
   if (!post) return <div className="window-content post-content"><p>Loading...</p></div>
@@ -232,16 +237,7 @@ const PostContent = ({ postId }) => {
 
   return (
     <div className="window-content post-content">
-      {post.image && (
-        <img
-          src={`${API_BASE}${post.image}`}
-          srcSet={post.imageSrcSet ? post.imageSrcSet.split(', ').map(s => `${API_BASE}${s}`).join(', ') : undefined}
-          sizes="(max-width: 600px) 400px, 800px"
-          alt=""
-          className="post-image"
-          loading="lazy"
-        />
-      )}
+      {post.image && <img src={post.image} alt="" className="post-image" loading="lazy" />}
       <h2>{post.title}</h2>
       <span className="post-date">{post.date}</span>
       <div className="post-body">
@@ -334,9 +330,9 @@ const ProjectContent = ({ projectId }) => {
   const [project, setProject] = useState(null)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/projects/${projectId}`)
+    fetch(`${DATA_BASE}/projects.json`)
       .then(r => r.json())
-      .then(setProject)
+      .then(data => setProject(data[projectId] || null))
   }, [projectId])
 
   if (!project) return <div className="window-content post-content"><p>Loading...</p></div>
@@ -345,7 +341,7 @@ const ProjectContent = ({ projectId }) => {
 
   return (
     <div className="window-content post-content">
-      {project.image && <img src={`${API_BASE}${project.image}`} alt="" className="post-image" loading="lazy" />}
+      {project.image && <img src={project.image} alt="" className="post-image" loading="lazy" />}
       <h2>{project.title}</h2>
       <div className="post-body">
         {parts.map((part, i) => {
@@ -370,7 +366,7 @@ const PhotosContent = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/photos`)
+    fetch(`${DATA_BASE}/photos.json`)
       .then(r => r.json())
       .then(data => { setPhotos(data); setLoading(false) })
       .catch(() => setLoading(false))
@@ -411,7 +407,7 @@ const MusicContent = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/music`)
+    fetch(`${DATA_BASE}/music.json`)
       .then(r => r.json())
       .then(data => { setTracks(data); setLoading(false) })
       .catch(() => setLoading(false))
@@ -455,7 +451,7 @@ const BookmarksContent = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/bookmarks`)
+    fetch(`${DATA_BASE}/bookmarks.json`)
       .then(r => r.json())
       .then(data => { setLinks(data); setLoading(false) })
       .catch(() => setLoading(false))
