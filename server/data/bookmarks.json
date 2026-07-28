@@ -26,5 +26,12 @@
     "url": "https://www.youtube.com/@CompadreTlacuache",
     "description": null,
     "icon": null
+  },
+  {
+    "id": "b0",
+    "title": "Manuel Morsa",
+    "url": "http://www.manuelmorsa.com",
+    "description": "Personal blog of Manuel Morsa, chess player",
+    "icon": null
   }
 ]
